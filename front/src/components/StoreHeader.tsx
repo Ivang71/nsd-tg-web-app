@@ -21,6 +21,3 @@ export default () => {
     </div>
   )
 }
-
-// StoreHeader component that is a header that has these elements from left to right: 1 arrow button, 2 search bar, 3 cart button
-// the arrow button shows collapsible block with extended search filter the cart button shows the cart slider from the right

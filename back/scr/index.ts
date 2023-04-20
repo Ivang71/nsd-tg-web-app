@@ -10,7 +10,7 @@ const token = process.env.TG_BOT_TOKEN
 const webHookUrl = process.env.WEBHOOK_URL
 const port = process.env.LOCAL_PORT
 
-const bot = new TelegramBot(token)
+const bot = new TelegramBot(token as string)
 
 await bot.setWebHook(`${webHookUrl}/bot${token}`)
 
@@ -33,7 +33,7 @@ app.post('api/order', async (req, res) => {
             id: queryId,
             title: 'Успешная покупка',
             input_message_content: {
-                message_text: `Поздравляю с покупкой, вы приобрели товар на сумму ${totalPrice}, ${products.map(item => item.title).join(', ')}`,
+                message_text: `Поздравляю с покупкой, вы приобрели товар на сумму ${totalPrice}, ${products.map((item: any) => item.title).join(', ')}`,
             },
         })
         return res.status(200).json({})
