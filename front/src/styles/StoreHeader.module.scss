@@ -1,0 +1,69 @@
+.header {
+  width: 100vw;
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+@mixin tg-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  outline: none;
+  transition: 0.3s ease-in-out all 0.1s;
+
+  * {
+    color: var(--tg-theme-button-text-color, #eee);
+  }
+}
+
+@mixin outline-button {
+  position: relative;
+  background: transparent;
+  padding: 0.4rem;
+  margin: -0.4rem;
+
+  &:active {
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  @media (pointer: fine) {
+    &:hover {
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 140%;
+    height: 140%;
+    border-radius: 50%;
+    backdrop-filter: brightness(1.7);
+    opacity: 0;
+    transition: 0.1s ease-in-out all;
+  }
+}
+
+.arrowButton {
+  @include tg-button;
+  @include outline-button;
+
+  svg {
+    transition: 0.3s ease-in-out all 0.1s;
+  }
+}
+
+.searchBar {
+
+}
+
+.cartButton {
+  @include tg-button;
+  @include outline-button;
+}
