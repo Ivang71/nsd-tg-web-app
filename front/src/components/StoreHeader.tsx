@@ -12,11 +12,11 @@ export default () => {
         className={s.arrowButton}
         name={filtersVisible ? 'Скрыть фильтры' : 'Показать фильтры'}
       >
-        <TfiAngleDown transform={`rotate(${filtersVisible ? '180' : '0'})`} size={30} title="Стрелка вниз"/>
+        <TfiAngleDown transform={`rotate(${filtersVisible ? '180' : '0'})`} size={35} title="Стрелка вниз"/>
       </button>
-      <input role="searchbox" type="text" className={s.searchBar}/>
+      <input role="searchbox" type="text" className={s.searchBar} placeholder="Поиск.."/>
       <button className={s.cartButton}>
-        <TfiShoppingCart size={30} title="Корзина"/>
+        <TfiShoppingCart size={35} title="Корзина"/>
       </button>
     </div>
   )
