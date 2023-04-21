@@ -1,6 +1,6 @@
 .header {
   width: 100vw;
-  padding: 30px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
 }
@@ -61,7 +61,8 @@
 
 .searchBar {
   flex-grow: 1;
-  margin: 0 2.3rem;
+  margin: 0 1.3rem;
+  min-width: 100px;
   border: 2px solid var(--tg-theme-hint-color, #8b97a3);
   border-radius: 20px;
   background: transparent;
