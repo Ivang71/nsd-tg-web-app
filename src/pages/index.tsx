@@ -1,8 +1,14 @@
 import Head from 'next/head'
 import {GetStaticProps} from 'next'
 import StoreHeader from '@/components/StoreHeader'
+import {baseApiUrl} from '@/lib/telegram'
+import Image from 'next/image'
+import s from '../styles/Store.module.scss'
+import {HiMinus, HiPlus} from 'react-icons/hi'
 
-export default function Store() {
+export default function Store({products}: { products: any }) {
+  console.log(products)
+
   return (
     <>
       <Head>
@@ -12,7 +18,22 @@ export default function Store() {
       </Head>
       <main>
         <StoreHeader/>
-        <div className="productList"></div>
+        <div className={s.productList}>
+          {products.map((product: any) => (
+            <div className={s.productCard} key={product.id}>
+              <Image src={product.images[0].src} alt={'Фото ' + product.name} className={s.productImage} width={140}
+                     height={140}/>
+              <div className={s.productName}>
+                <span>{product.name} </span>
+                <span className={s.price}>{product.price} ₽</span>
+              </div>
+              <div className={s.buttons}>
+                <button className={s.buttonRemove}><HiMinus/></button>
+                <button className={s.buttonAdd}><HiPlus/></button>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     </>
   )
@@ -20,9 +41,11 @@ export default function Store() {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   // https://nextjs.org/docs/basic-features/data-fetching/get-static-props
+  const products = await fetch(baseApiUrl + '/products?per_page=33').then((res) => res.json())
+
   return {
     props: {
-      // first batch of products
+      products,
     },
   }
 }
