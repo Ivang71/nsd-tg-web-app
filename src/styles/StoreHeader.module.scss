@@ -86,3 +86,9 @@
   @include tgButton;
   @include outlineButton;
 }
+
+.cartBackButton {
+  @include tgButton;
+  @include outlineButton;
+  margin: 20px;
+}

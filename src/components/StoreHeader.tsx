@@ -1,9 +1,9 @@
-import s from '../styles/StoreHeader.module.scss'
+import s from '@/styles/StoreHeader.module.scss'
 import {TfiAngleDown, TfiShoppingCart} from 'react-icons/tfi'
 import {useState} from 'react'
 
-export default () => {
-  const [filtersVisible, setFiltersVisible] = useState(false)
+export default ({ toggleCart }: { toggleCart: Function }) => {
+  const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
   return (
     <div className={s.header}>
@@ -15,7 +15,7 @@ export default () => {
         <TfiAngleDown transform={`rotate(${filtersVisible ? '180' : '0'})`} size={27} title="Стрелка вниз"/>
       </button>
       <input role="searchbox" type="text" className={s.searchBar} placeholder="Поиск.."/>
-      <button className={s.cartButton}>
+      <button className={s.cartButton} onClick={() => toggleCart()}>
         <TfiShoppingCart size={27} title="Корзина"/>
       </button>
     </div>

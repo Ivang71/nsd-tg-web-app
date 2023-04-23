@@ -1,0 +1,15 @@
+.cart {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  right: -100vw;
+  height: 100vh;
+  width: 100vw;
+
+  background: var(--tg-theme-bg-color, #1d2733);
+  transition: .3s ease-in-out;
+}
+
+.open {
+  right: 0;
+}

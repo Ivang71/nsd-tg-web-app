@@ -1,0 +1,117 @@
+.productList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  @media screen and (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media screen and (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media screen and (max-width: 365px) {
+    .productImage {
+      width: 95%;
+      height: 95%;
+    }
+  }
+  justify-content: space-between;
+  column-gap: 30px;
+  row-gap: 5px;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 15px;
+}
+
+.productCard {
+  padding: 10px;
+  display: grid;
+  place-items: center;
+}
+
+.imageContainer {
+  position: relative;
+}
+
+.productImage {
+
+}
+
+.productQuantity {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  padding: 5px;
+  min-width: 32px;
+  text-align: center;
+  border-radius: 50%;
+  background: #eeb039;
+  font-weight: 500;
+}
+
+.productName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.price {
+  font-size: 0.9rem;
+}
+
+.buttons {
+  position: relative;
+  width: 144px;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+}
+
+@mixin productButton {
+  padding: 5px;
+  width: 62px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  color: #fff;
+  font-size: 22px;
+  border-radius: 7px;
+  border: none;
+  overflow: hidden;
+  transition: .1s ease-in all;
+}
+
+.buttonAdd {
+  @include productButton;
+  z-index: 100;
+  position: absolute;
+  right: 0;
+  width: 144px;
+  background: #eeb039;
+}
+
+.addText {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.shrink {
+  width: 62px;
+}
+
+.buttonRemove {
+  @include productButton;
+  background: #d6573b;
+}
+
+.pop {
+  animation: pop 1s ease-in-out infinite;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(.7, .7);
+  }
+  to {
+    transform: scale(1, 1);
+  }
+}
