@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import {GetStaticProps} from 'next'
 import StoreHeader from '@/components/StoreHeader'
-import {baseApiUrl} from '@/lib/telegram'
 import Cart from '@/components/Cart'
-import React, {useState} from 'react'
+import {useState} from 'react'
 import {observer} from 'mobx-react'
 import ProductList from '@/components/ProductList'
+import ps from '@/stores/ProductStore'
 
 export default observer(({staticProducts}: { staticProducts: any[] }) => {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false)
@@ -27,10 +27,10 @@ export default observer(({staticProducts}: { staticProducts: any[] }) => {
 })
 
 export const getStaticProps: GetStaticProps = async () => {
-  const staticProducts = await fetch(baseApiUrl + '/products?per_page=33').then((res) => res.json())
+  await ps.getProducts()
   return {
     props: {
-      staticProducts,
+      staticProducts: ps.products,
     },
   }
 }

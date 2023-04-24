@@ -8,7 +8,7 @@ interface CartProps {
   close: () => void
 }
 
-export default observer(({ isOpen, close }: CartProps) => {
+export default observer(({isOpen, close}: CartProps) => {
 
   return (
     <div className={`${s.cart} ${isOpen && s.open}`}>

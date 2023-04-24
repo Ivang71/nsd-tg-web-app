@@ -12,7 +12,7 @@
   align-items: center;
   border: none;
   outline: none;
-  transition: .3s ease-in-out all .1s;
+  transition: .3s ease-in-out all;
 
   * {
     color: var(--tg-theme-hint-color, #8b97a3);
@@ -56,7 +56,7 @@
   @include outlineButton;
 
   svg {
-    transition: .3s ease-in-out .1s;
+    transition: .3s ease-in-out .07s;
   }
 }
 
@@ -70,6 +70,7 @@
   outline: none;
   caret-color: var(--tg-theme-link-color, #5eabe1);
   transition: .3s ease-in-out;
+
   &::placeholder {
     color: var(--tg-theme-hint-color, #8b97a3);
     font-size: 1.1rem;
@@ -77,7 +78,7 @@
   }
 }
 
-.searchBar:focus{
+.searchBar:focus {
   border-color: var(--tg-theme-button-color, #50a8eb);
   box-shadow: 0 0 8px 0 var(--tg-theme-button-color, #50a8eb);
 }
