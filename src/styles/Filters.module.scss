@@ -6,15 +6,16 @@
   max-height: 0;
   overflow: hidden;
   transition: .3s ease-in-out all .07s;
-  border-bottom: 5px solid var(--tg-theme-secondary-bg-color, #232e3c);
+  border-bottom: 5px solid var(--secondary-bg-color);
 }
 
 .open {
-  max-height: 478px;
+  max-height: 498px;
   padding-top: 20px;
 }
 
-.brandsList {
+.brandList {
+  padding: 10px 0;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
@@ -23,6 +24,8 @@
 
 .imageContainer {
   position: relative;
+  display: grid;
+  place-items: center;
   transition: .15s ease-in-out all;
 }
 
@@ -32,7 +35,7 @@
   left: 6px;
   font-weight: bold;
   font-size: 1.3rem;
-  background: rgb(0 0 0 / 38%);
+  background: rgb(0 0 0 / 50%);
   border-radius: 9px;
   line-height: 1.8rem;
   padding: 2px;
@@ -40,8 +43,8 @@
 }
 
 .selected {
-  box-shadow: 0 -3px 7px 5px rgba(211, 65, 65, 0.6784313725);
-  background: rgba(211, 65, 65, 0.6784313725);
+  box-shadow: 0 0 7px 5px var(--hint-color);
+  background: var(--hint-color);
   filter: contrast(1.2);
   animation: squeeze .3s ease-in-out 1;
 }
@@ -66,16 +69,17 @@
 
 .resetsButton {
   padding: 10px;
-  background: #2ec2fdd1;
-  color: var(--tg-theme-button-text-color, #fff);
-  border: none;
+  background: transparent;
+  color: var(--text-color);
+  border: 2px solid var(--hint-color);
   font-size: 1.1rem;
   font-weight: 600;
   border-radius: 7px;
-  transition: .1s ease-in all;
+  transition: .1s ease-in-out all;
   user-select: none;
 
   &:active {
-    background: rgba(190, 230, 255, 0.82);
+    background: var(--text-color);
+    color: var(--bg-color);
   }
 }

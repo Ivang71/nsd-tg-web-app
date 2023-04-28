@@ -1,6 +1,7 @@
 import {makeAutoObservable, runInAction} from 'mobx'
 import {baseApiUrl} from '@/lib/telegram'
 import metaStore from '@/stores/MetaStore'
+import cs from '@/stores/CartStore'
 
 // used for fetching, storing, filtering products. Products from here displayed on the main page
 export interface Product {
@@ -12,6 +13,8 @@ export interface Product {
   regular_price: string
   sale_price: string
   on_sale: boolean
+  description: string
+  short_description: string
   quantity: number
   images: { id: number, src: string, name: string, alt: string }[]
   categories: { id: number, name: string, slug: string }[]
@@ -30,6 +33,10 @@ class ProductStore {
     makeAutoObservable(this)
   }
 
+  getById(id: number) {
+    return this.products.find(p => p.id === id)
+  }
+
   private async fetchProducts() {
     const url = new URLSearchParams(metaStore.filters).toString()
     let products: Product[] = []
@@ -37,13 +44,17 @@ class ProductStore {
     this.abortController = controller
     try {
       products = await
-        fetch(baseApiUrl + '/products?' + url, {signal: controller.signal})
+        fetch(baseApiUrl + '/products?' + url/*, {signal: controller.signal}*/)
           .then((res) => res.json())
     } finally {
       this.abortController = null
     }
+    for (let p of products) {
+      const inCart = cs.getById(p.id)
+      p.quantity = inCart ? inCart.quantity : 0
+    }
     runInAction(() => {
-      this.products = products.map(p => ({...p, quantity: 0}))
+      this.products = products
       !this.didFirstFetch && (this.didFirstFetch = true)
       this.fetching = false
     })

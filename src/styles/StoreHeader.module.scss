@@ -15,7 +15,7 @@
   transition: .3s ease-in-out all;
 
   * {
-    color: var(--tg-theme-hint-color, #8b97a3);
+    color: var(--hint-color);
   }
 }
 
@@ -45,7 +45,7 @@
     width: 140%;
     height: 140%;
     border-radius: 50%;
-    backdrop-filter: brightness(1.7);
+    backdrop-filter: invert(.3);
     opacity: 0;
     transition: .1s ease-in-out all;
   }
@@ -62,25 +62,28 @@
 
 .searchBar {
   flex-grow: 1;
-  margin: 0 calc(1.3rem + 4%);
+  margin-left: calc(1.3rem + 4%);
   min-width: 100px;
-  border: 2px solid var(--tg-theme-hint-color, #8b97a3);
+  border: 2px solid var(--hint-color);
   border-radius: 20px;
   background: transparent;
   outline: none;
-  caret-color: var(--tg-theme-link-color, #5eabe1);
+  caret-color: var(--text-color);
   transition: .3s ease-in-out;
+  font-size: 1.1rem;
+  text-indent: 1.5rem;
+  color: var(--text-color);
 
   &::placeholder {
-    color: var(--tg-theme-hint-color, #8b97a3);
+    color: var(--hint-color);
     font-size: 1.1rem;
     text-indent: 1.5rem;
   }
 }
 
 .searchBar:focus {
-  border-color: var(--tg-theme-button-color, #50a8eb);
-  box-shadow: 0 0 8px 0 var(--tg-theme-button-color, #50a8eb);
+  border-color: var(--text-color);
+  box-shadow: 0 0 8px 0 var(--text-color);
 }
 
 .cartButton {

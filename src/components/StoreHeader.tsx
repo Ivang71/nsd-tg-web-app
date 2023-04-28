@@ -1,9 +1,11 @@
 import s from '@/styles/StoreHeader.module.scss'
-import {TfiAngleDown, TfiShoppingCart} from 'react-icons/tfi'
+import {TfiAngleDown} from 'react-icons/tfi'
 import {useState} from 'react'
+import ms from '@/stores/MetaStore'
 import Filters from '@/components/Filters'
+import {observer} from 'mobx-react'
 
-export default ({toggleCart}: { toggleCart: Function }) => {
+export default observer(() => {
   const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
   return (
@@ -16,12 +18,16 @@ export default ({toggleCart}: { toggleCart: Function }) => {
         >
           <TfiAngleDown transform={`rotate(${filtersVisible ? '180' : '0'})`} size={27} title="Стрелка вниз"/>
         </button>
-        <input role="searchbox" type="text" className={s.searchBar} placeholder="Поиск.."/>
-        <button className={s.cartButton} onClick={() => toggleCart()}>
-          <TfiShoppingCart size={27} title="Корзина"/>
-        </button>
+        <input
+          role="searchbox"
+          type="text"
+          className={s.searchBar}
+          placeholder="Поиск.."
+          value={ms.filters.search}
+          onChange={e => ms.search(e.target.value)}
+        />
       </div>
       <Filters open={filtersVisible}/>
     </>
   )
-}
+})

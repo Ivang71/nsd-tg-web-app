@@ -1,3 +1,9 @@
+.nothingFound {
+  margin-top: 20%;
+  display: grid;
+  place-items: center;
+}
+
 .productList {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -15,9 +21,9 @@
     }
   }
   justify-content: space-between;
-  column-gap: 30px;
+  column-gap: 15px;
   row-gap: 25px;
-  margin: 15px auto 0;
+  margin: 15px auto 50px;
   max-width: 1200px;
   padding: 0 15px;
 }
@@ -62,6 +68,7 @@
 
 .price {
   font-size: 0.9rem;
+  font-weight: bold;
 }
 
 .buttons {
@@ -84,7 +91,7 @@
   border-radius: 7px;
   border: none;
   overflow: hidden;
-  transition: .2s ease-in all;
+  transition: .25s ease-in-out all;
 }
 
 .buttonAdd {
@@ -94,6 +101,10 @@
   right: 0;
   width: 144px;
   background: #eeb039;
+
+  &:disabled {
+    opacity: .5;
+  }
 }
 
 .addText {
@@ -108,6 +119,10 @@
 .buttonRemove {
   @include productButton;
   background: #d6573b;
+
+  &:disabled {
+    opacity: 0;
+  }
 }
 
 .pop {

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import {useEffect} from 'react'
 import {observer} from 'mobx-react'
 
-export default observer(({open}: {open: boolean}) => {
+export default observer(({open}: { open: boolean }) => {
 
     useEffect(() => {
       ms.getInitialData()
@@ -12,11 +12,11 @@ export default observer(({open}: {open: boolean}) => {
 
     return (
       <div className={`${s.filters} ${open && s.open}`}>
-        <div className={s.brandsList}>
+        <div className={s.brandList}>
           {ms.categories.map(c => (
             <div
               key={c.id}
-              className={`${s.imageContainer} ${ms.categorySelected(c)? s.selected: ''}`}
+              className={`${s.imageContainer} ${ms.categorySelected(c) ? s.selected : ''}`}
               onClick={() => ms.toggleCategory(c)}
             >
               <Image src={c.image.src} alt={c.image.alt} width={120} height={120}/>
@@ -31,5 +31,5 @@ export default observer(({open}: {open: boolean}) => {
         )}
       </div>
     )
-  }
+  },
 )

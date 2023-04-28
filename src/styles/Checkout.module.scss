@@ -1,0 +1,121 @@
+.checkout {
+  z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: -100vw;
+  height: 100vh;
+  width: 100vw;
+  padding: 15px;
+  overflow: auto;
+
+  background: var(--bg-color);
+  transition: .3s ease-in-out left;
+
+  textarea {
+    margin-top: 5px;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: .8rem 15px;
+    background: var(--secondary-bg-color);
+    caret-color: var(--text-color);
+    color: var(--text-color);
+    resize: none;
+  }
+}
+
+.open {
+  left: 0;
+}
+
+.cartProductList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.product {
+  display: flex;
+}
+
+.productImage {
+
+}
+
+.productTextContainer {
+  margin-left: 15px;
+}
+
+.productName {
+  color: var(--hint-color);
+}
+
+.productQuantity {
+  color: var(--hint-color);
+}
+
+.productPrice {
+  margin-left: auto;
+  color: var(--hint-color);
+}
+
+.red {
+  color: red;
+}
+
+.totalBlock {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.subtotal {
+  color: var(--hint-color);
+}
+
+.subscript {
+  padding: 10px 15px 15px;
+  font-size: 0.9rem;
+  color: var(--hint-color);
+}
+
+.deliveryType {
+  margin-top: 15px;
+  padding: 15px;
+  label {
+    margin: -15px;
+    padding: 15px 15px 15px 22px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  div {
+    position: relative;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    &::after {
+      content: "";
+      position: absolute;
+      left: -15px;
+      right: -15px;
+      height: 100%;
+      transition: .3s ease-in-out all;
+      pointer-events: none;
+    }
+  }
+  &>div:has(> input:checked)::after {
+    backdrop-filter: invert(.25);
+  }
+  input[type="radio"]{
+    visibility:hidden;
+  }
+}
+
+.total {
+  font-weight: bold;
+}
+
+.paymentDetails {
+  padding-top: 10px;
+}

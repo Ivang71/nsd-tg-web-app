@@ -44,6 +44,7 @@ export interface Filters {
   status: string
   min_price: number
   max_price: number | string
+
   [x: string]: any
 }
 
@@ -123,7 +124,12 @@ class MetaStore {
     this.getFilteredProducts()
   }
 
-  categorySelected({ id }: { id: number }) {
+  search(search: string) {
+    this.filters.search = search
+    this.getFilteredProducts()
+  }
+
+  categorySelected({id}: { id: number }) {
     return this.filters.category.includes(id)
   }
 
