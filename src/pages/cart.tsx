@@ -1,29 +1,41 @@
-import s from '@/styles/Cart.module.scss'
 import {observer} from 'mobx-react'
+import {ChangeEventHandler, useEffect, useRef} from 'react'
+import ms from '@/stores/MetaStore'
+import s from '@/styles/Cart.module.scss'
 import cs from '@/stores/CartStore'
 import Image from 'next/image'
-import {ChangeEventHandler, useRef} from 'react'
+import {useRouter} from 'next/router'
+import {tg} from '@/pages/_app'
 
-interface CartProps {
-  isOpen: boolean
-  close: () => void
-}
-
-export default observer(({isOpen, close}: CartProps) => {
+export default observer(() => {
   const commentRef = useRef<HTMLTextAreaElement>(null)
+  const router = useRouter()
 
   const onCommentChange: ChangeEventHandler<HTMLTextAreaElement> = () => {
     if (commentRef.current) {
       commentRef.current.style.height = 'auto'
       commentRef.current.style.height = commentRef.current.scrollHeight + 'px'
     }
+    ms.orderNote = commentRef.current?.value || ''
   }
 
+  useEffect(() => {
+    tg.expand()
+    tg.BackButton.show()
+    tg.MainButton.text = 'Оформить заказ'
+    tg.MainButton.onClick(() => router.push('/checkout'))
+    tg.BackButton.onClick(() => router.push('/'))
+    return () => {
+      tg.MainButton.onClick(() => router.push('/checkout'))
+      tg.BackButton.onClick(() => router.push('/'))
+    }
+  }, [tg])
+
   return (
-    <div className={`${s.cart} ${isOpen && s.open}`}>
+    <div className={s.cart}>
       <div className={s.cartHeader}>
         <h3>ВАШ ЗАКАЗ</h3>
-        <button className={s.editButton} onClick={close}>Изменить</button>
+        <button className={s.editButton} onClick={() => router.push('/')}>Изменить</button>
       </div>
       <div className={s.cartProductList}>
         {cs.cart.map(p => (
@@ -56,6 +68,7 @@ export default observer(({isOpen, close}: CartProps) => {
         cols={30}
         rows={1}
         onChange={onCommentChange}
+        value={ms.orderNote}
         placeholder="Комментарий..."
       />
       <div className={s.subscript}>Любые особые просьбы, детали, последние желания и т. д.</div>

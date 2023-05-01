@@ -7,7 +7,7 @@ import {useEffect} from 'react'
 import {observer} from 'mobx-react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import {tg} from '@/pages'
+import {tg} from '@/pages/_app'
 
 export default observer(({staticProducts}: { staticProducts: any[] }) => {
   useEffect(() => {
