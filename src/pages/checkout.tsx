@@ -40,6 +40,7 @@ export default observer(() => {
       deliveryType: 'pickup',
     })
     const [isPromoCorrect, setIsPromoCorrect] = useState<boolean>(false)
+    const [isWrongEmail, setIsWrongEmail] = useState<boolean>(false)
     const [discount, setDiscount] = useState<number>(0)
     const router = useRouter()
 
@@ -47,13 +48,16 @@ export default observer(() => {
       setForm({...form, name: tg?.initDataUnsafe?.user?.first_name || form.name})
       tg.BackButton.show()
       tg.MainButton.text = 'Отправить заказ'
-      tg.MainButton.onClick(submit)
       tg.BackButton.onClick(() => router.push('/cart'))
       return () => {
-        tg.MainButton.offClick(submit)
         tg.BackButton.offClick(() => router.push('/cart'))
       }
     }, [tg])
+
+    useEffect(() => {
+      tg.MainButton.onClick(submit)
+      return () => tg.MainButton.offClick(submit)
+    })
 
     useEffect(() => {
       const discount = isPromoCorrect && ms.coupons.find(c => c.code === form.promocode.toLowerCase())?.amount
@@ -70,6 +74,18 @@ export default observer(() => {
       onFieldChange(e)
     }
 
+    const onEmailChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+      setIsWrongEmail(false)
+      onFieldChange(e)
+    }
+
+    const onEmailBlur: ChangeEventHandler<HTMLInputElement> = (e) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i
+      if (!emailRegex.test(e.target.value)) {
+        setIsWrongEmail(true)
+      }
+    }
+
     const onPromoCodeChange: ChangeEventHandler<HTMLInputElement> = (e) => {
       e.target.value = e.target.value.toLowerCase()
       const promo = ms.coupons.find(c => e.target.value.includes(c.code))
@@ -84,56 +100,70 @@ export default observer(() => {
       }))
 
     const submit = async () => {
-      // const valid = !!form.name && !!form.country && !!form.city && !!form.address && !!form.phone && !!form.email
-      // if (!valid) {
-      //   toast('Пожалуйста заполните все обязательные поля', {type: 'error', className: s.toast})
-      //   return
-      // }
+      const valid = !!form.name && !!form.country && !!form.city && !!form.address && !!form.phone && !isWrongEmail
+      if (!valid) {
+        toast('Пожалуйста заполните все обязательные поля', {type: 'error', className: s.toast})
+        return
+      }
+      tg.MainButton.showProgress()
       const tgUsername = tg?.initDataUnsafe?.user?.username ? (' @' + tg?.initDataUnsafe?.user?.username) : ''
       // add order to wp
-      await fetch(baseApiUrl + '/orders', {
+      const body: any = {
+        set_paid: true,
+        billing: {
+          first_name: form.name,
+          email: form.email,
+        },
+        shipping: {
+          address_1: form.address,
+          city: form.city,
+          phone: form.phone,
+          country: form.country,
+        },
+        line_items: cs.cart.map(p => ({
+          product_id: p.id,
+          quantity: p.quantity,
+        })),
+        shipping_lines: [
+          {
+            method_id: 'flat_rate',
+            method_title: deliveryToName[form.deliveryType],
+            total: deliveryToPrice[form.deliveryType].toString(),
+          },
+        ],
+        coupon_lines: isPromoCorrect ? [{code: form.promocode.trim()}] : [],
+      }
+      if (tgUsername) {
+        body.customer_note = 'Телеграм: ' + tgUsername + '\n' + ms.orderNote
+      }
+      const res = await fetch(baseApiUrl + '/orders', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          set_paid: true,
-          billing: {
-            first_name: form.name,
-          },
-          shipping: {
-            address_1: form.address,
-            city: form.city,
-            phone: form.phone,
-            email: form.email,
-            country: form.country,
-          },
-          line_items: cs.cart.map(p => ({
-            product_id: p.id,
-            quantity: p.quantity,
-          })),
-          shipping_lines: [
-            {
-              method_id: 'flat_rate',
-              method_title: deliveryToName[form.deliveryType],
-              total: deliveryToPrice[form.deliveryType].toString(),
-            },
-          ],
-          coupon_lines: isPromoCorrect ? [{code: form.promocode.trim()}] : [],
-          customer_note: 'Телеграм: ' + tgUsername + '\n' + ms.orderNote,
-        }),
+        body: JSON.stringify(body),
       })
+      if (!res.ok) {
+        const data = await res.json()
+        toast(data.message, {type: 'error', className: s.toast})
+        return
+      }
 
       // notify telegram bot
-      // await fetch(baseApiUrl + '/nsdTgBot/order', {
-      //   method: 'POST',
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: JSON.stringify({
-      //     query_id: tg.initDataUnsafe?.query_id,
-      //     products: cs.cart.map(p => ({id: p.id, name: p.name, price: p.price, quantity: p.quantity})),
-      //     total,
-      //     discount,
-      //     ...form,
-      //   })
-      // })
+      const query_id = tg?.initDataUnsafe?.query_id
+      if (!query_id) {
+        toast('You shall not pass! 🧙', {type: 'error', className: s.toast})
+        return
+      }
+
+      let message = `Поздравляем с покупкой!🎉\nВаш заказ:\n\n${cs.cart.map(p => `${p.name} ${p.quantity} шт. ${p.price} руб.`).join('\n')}\n\nТовар: ${subtotal} руб.`
+      if (discount) message += `\nСкидка: ${discount} % — ${Math.round(subtotal * discount / 100)} руб.`
+      message += `\nДоставка: ${deliveryToName[form.deliveryType]}: ${deliveryToPrice[form.deliveryType]} руб.\nК оплате: ${total} руб.\n\nВ ближайшее время с вами свяжется наш менеджер для уточнения деталей.`
+
+      await fetch('/api/tg', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query_id, message}),
+      })
+      tg.MainButton.hideProgress()
     }
 
     const subtotal = cs.cart.length
@@ -156,28 +186,34 @@ export default observer(() => {
           <div className={s.form}>
             <div>
               <label htmlFor="name">Имя <span className={s.red}>*</span></label>
-              <input type="text" name="name" value={form.name} onChange={onFieldChange}/>
+              <input type="text" name="name" autoComplete="given-name" value={form.name} onChange={onFieldChange}/>
             </div>
             <div>
               <label htmlFor="country">Страна <span className={s.red}>*</span></label>
-              <input type="text" name="country" value={form.country} onChange={onFieldChange}/>
+              <input type="text" name="country" autoComplete="country" value={form.country} onChange={onFieldChange}/>
             </div>
             <div>
               <label htmlFor="city">Город <span className={s.red}>*</span></label>
-              <input type="text" name="city" value={form.city} onChange={onFieldChange}/>
+              <input type="text" name="city" autoComplete="address-level2" value={form.city} onChange={onFieldChange}/>
             </div>
             <div>
               <label htmlFor="address">Адрес <span className={s.red}>*</span></label>
-              <textarea name="address" placeholder="Проспект ленина 1, кв 42" value={form.address} ref={addressRef}
-                        onChange={onAddressChange}/>
+              <textarea
+                name="address"
+                autoComplete="street-address"
+                placeholder="Проспект ленина 1, кв 42"
+                value={form.address}
+                ref={addressRef}
+                onChange={onAddressChange}/>
             </div>
             <div>
               <label htmlFor="phone">Телефон <span className={s.red}>*</span></label>
-              <input type="text" name="phone" value={form.phone} onChange={onFieldChange}/>
+              <input type="text" name="phone" autoComplete="tel" value={form.phone} onChange={onFieldChange}/>
             </div>
-            <div>
+            <div className={isWrongEmail ? s.wrongEmail : ''}>
               <label htmlFor="email">Email <span className={s.red}>*</span></label>
-              <input type="text" name="email" value={form.email} onChange={onFieldChange}/>
+              <input type="text" name="email" autoComplete="email" value={form.email} onChange={onEmailChange}
+                     onBlur={onEmailBlur}/>
             </div>
           </div>
           <div className={s.checkoutProductList}>

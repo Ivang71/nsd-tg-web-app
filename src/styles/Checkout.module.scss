@@ -95,7 +95,13 @@
 }
 
 .red {
-  color: red;
+  color: #d31f1f;
+}
+
+.wrongEmail {
+  input {
+    outline: 1px solid #d31f1f;
+  }
 }
 
 .totalBlock {
