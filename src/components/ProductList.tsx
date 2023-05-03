@@ -23,47 +23,55 @@ export default observer(({staticProducts}: { staticProducts: any[] }) => {
       <h1>Ничего не найдено</h1>
     </div>
   ) : (
-    <div className={s.productList}>
-      {products.map((p) => {
-        const isInCart = cs.isInCart(p)
-        return fetching ?
-          <Skeleton
-            height={194}
-            width={140}
-            className={s.productCard + s.skeleton}
-            baseColor={tg?.themeParams.hint_color}
-            highlightColor={tg?.themeParams.bg_color}
-          /> : (
-            <div className={s.productCard} key={p.id}>
-              <div className={s.imageContainer}>
-                <Image src={p.images[0].src} alt={'Фото ' + p.name} className={s.productImage} width={140}
-                       height={140}/>
-                {isInCart && <span className={s.productQuantity}>{p.quantity}</span>}
+    <>
+      <div className={s.productList}>
+        {products.map((p) => {
+          const isInCart = cs.isInCart(p)
+          return fetching ?
+            <Skeleton
+              height={194}
+              width={140}
+              className={s.productCard + s.skeleton}
+              baseColor={tg?.themeParams.hint_color}
+              highlightColor={tg?.themeParams.bg_color}
+            /> : (
+              <div className={s.productCard} key={p.id}>
+                <div className={s.imageContainer}>
+                  <Image src={p.images[0].src} alt={'Фото ' + p.name} className={s.productImage} width={140}
+                         height={140}/>
+                  {isInCart && <span className={s.productQuantity}>{p.quantity}</span>}
+                </div>
+                <div className={s.productName}>
+                  <span>{p.name} </span>
+                  <span className={s.price}>{p.price} ₽</span>
+                </div>
+                <div className={s.buttons}>
+                  <button
+                    className={s.buttonRemove}
+                    onClick={() => cs.remove(p)}
+                    id={p.id.toString()}
+                    disabled={products === staticProducts}
+                  >
+                    <HiMinus/>
+                  </button>
+                  <button
+                    className={`${s.buttonAdd} ${isInCart && s.shrink}`}
+                    onClick={() => cs.add(p)}
+                    disabled={products === staticProducts}
+                  >
+                    {isInCart ? <HiPlus/> : <span className={s.addText}>Добавить</span>}
+                  </button>
+                </div>
               </div>
-              <div className={s.productName}>
-                <span>{p.name} </span>
-                <span className={s.price}>{p.price} ₽</span>
-              </div>
-              <div className={s.buttons}>
-                <button
-                  className={s.buttonRemove}
-                  onClick={() => cs.remove(p)}
-                  id={p.id.toString()}
-                  disabled={products === staticProducts}
-                >
-                  <HiMinus/>
-                </button>
-                <button
-                  className={`${s.buttonAdd} ${isInCart && s.shrink}`}
-                  onClick={() => cs.add(p)}
-                  disabled={products === staticProducts}
-                >
-                  {isInCart ? <HiPlus/> : <span className={s.addText}>Добавить</span>}
-                </button>
-              </div>
-            </div>
-          )
-      })}
-    </div>
+            )
+        })}
+      </div>
+      {ps.products.length > 6 && (
+        <div className={s.footer}>
+          <span>© {new Date().getFullYear()} No Smoke Division</span>
+          <span className={s.credentials}>Created by <a href="https://t.me/artolv" target="_blank">ivang</a></span>
+        </div>
+      )}
+    </>
   )
 })

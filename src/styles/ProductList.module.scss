@@ -137,3 +137,19 @@
     transform: scale(1, 1);
   }
 }
+
+.footer {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+
+  a {
+    color: #eeb039;
+    font-weight: bold;
+    text-decoration: none;
+  }
+}
+
+.credentials {
+  opacity: .5;
+}
