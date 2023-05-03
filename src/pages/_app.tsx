@@ -15,7 +15,7 @@ export default observer(({Component, pageProps}: AppProps) => {
     tg.ready && tg.ready()
     setTgLoaded(true)
     const s = (a: string, b: string) => document.documentElement.style.setProperty(a, b)
-    if (tg.colorScheme !== 'light') {
+    if (tg.colorScheme === 'light') {
       s('--bg-color', '#fff')
       s('--secondary-bg-color', '#f3f2f8')
       s('--hint-color', '#8f8f8f')
