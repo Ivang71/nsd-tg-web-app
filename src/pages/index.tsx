@@ -20,7 +20,6 @@ export default observer(({staticProducts}: { staticProducts: any[] }) => {
 
   return (
     <>
-      <button onClick={() => router.push('/checkout')}>to checkout</button>
       <Head>
         <title>No Smoke Division</title>
         <meta name="title" content="Купить снюс - лучший выбор для любителей табака"/>

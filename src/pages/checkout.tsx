@@ -285,7 +285,6 @@ export default observer(() => {
           <div className={s.paymentDetails}>
             После отправки заказа с вами свяжется менеджер для уточнения способа оплаты
           </div>
-          <button onClick={submit}>send</button>
         </div>
       </>
     )
