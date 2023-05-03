@@ -42,7 +42,20 @@ export default observer(() => {
     const [isPromoCorrect, setIsPromoCorrect] = useState<boolean>(false)
     const [isWrongEmail, setIsWrongEmail] = useState<boolean>(false)
     const [discount, setDiscount] = useState<number>(0)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const router = useRouter()
+
+    const startLoading = () => {
+      tg.MainButton.showProgress()
+      setIsLoading(true)
+      document.body.style.overflow = 'hidden'
+    }
+
+    const stopLoading = () => {
+      tg.MainButton.hideProgress()
+      setIsLoading(false)
+      document.body.style.overflow = 'auto'
+    }
 
     useEffect(() => {
       setForm({...form, name: tg?.initDataUnsafe?.user?.first_name || form.name})
@@ -103,13 +116,14 @@ export default observer(() => {
       const valid = !!form.name && !!form.country && !!form.city && !!form.address && !!form.phone && !isWrongEmail
       if (!valid) {
         toast('Пожалуйста заполните все обязательные поля', {type: 'error', className: s.toast})
+        stopLoading()
         return
       }
-      tg.MainButton.showProgress()
+      startLoading()
       const tgUsername = tg?.initDataUnsafe?.user?.username ? (' @' + tg?.initDataUnsafe?.user?.username) : ''
       // add order to wp
       const body: any = {
-        set_paid: true,
+        // set_paid: true,
         billing: {
           first_name: form.name,
           email: form.email,
@@ -141,18 +155,28 @@ export default observer(() => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(body),
       })
+
       if (!res.ok) {
         const data = await res.json()
         toast(data.message, {type: 'error', className: s.toast})
+        stopLoading()
         return
       }
 
+      const {id: orderId} = await res.json()
+      await fetch(baseApiUrl + `/orders/${orderId}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({status: 'processing'}),
+      })
+
       // notify telegram bot
       const query_id = tg?.initDataUnsafe?.query_id
-      if (!query_id) {
-        toast('You shall not pass! 🧙', {type: 'error', className: s.toast})
-        return
-      }
+      // if (!query_id) {
+      //   toast('You shall not pass! 🧙', {type: 'error', className: s.toast})
+      //   stopLoading()
+      //   return
+      // }
 
       let message = `Поздравляем с покупкой!🎉\nВаш заказ:\n\n${cs.cart.map(p => `${p.name} ${p.quantity} шт. ${p.price} руб.`).join('\n')}\n\nТовар: ${subtotal} руб.`
       if (discount) message += `\nСкидка: ${discount} % — ${Math.round(subtotal * discount / 100)} руб.`
@@ -163,7 +187,7 @@ export default observer(() => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({query_id, message}),
       })
-      tg.MainButton.hideProgress()
+      stopLoading()
     }
 
     const subtotal = cs.cart.length
@@ -180,6 +204,9 @@ export default observer(() => {
 
     return (
       <>
+        <div className={`${s.backdrop} ${isLoading && s.visible}`}>
+          <div className={s.loader}></div>
+        </div>
         <ToastContainer/>
         <div className={s.checkout}>
           <h3 className={s.title}>Оформление заказа</h3>
@@ -285,6 +312,7 @@ export default observer(() => {
           <div className={s.paymentDetails}>
             После отправки заказа с вами свяжется менеджер для уточнения способа оплаты
           </div>
+          <button onClick={submit}>submit</button>
         </div>
       </>
     )

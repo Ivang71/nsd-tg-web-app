@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let message = 'По любым вопросам, пожалуйста, обращайстесь к менеджеру @NoSmokeDivision'
 
       if (body.message.text === '/start') {
-        message = `Привет! Я бот No Smoke Division, и я здесь, чтобы помочь тебе получить свой любимый снюс быстро и легко. Нажми на кнопку "Заказать" внизу клавиатуры, чтобы сделать свой заказ. Ждем твоего заказа!`
+        message = `Привет! Я бот No Smoke Division, и я здесь, чтобы помочь тебе получить любимый снюс быстро и легко. Нажми на кнопку "Заказать" внизу клавиатуры, чтобы сделать свой заказ. Ждем твоего заказа!`
       }
       await bot.sendMessage(id, message)
     }
